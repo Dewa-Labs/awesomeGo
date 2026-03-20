@@ -4,17 +4,12 @@ import (
 	"fmt"
 	"net/http"
 	"os"
+
+	"awesomeGo/internal/server"
 )
 
 func main() {
-	http.HandleFunc("/health", func(w http.ResponseWriter, r *http.Request) {
-		w.WriteHeader(http.StatusOK)
-		fmt.Fprintln(w, "ok")
-	})
-
-	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
-		fmt.Fprintln(w, "Hello, Gopher! Welcome to your server.")
-	})
+	router := server.NewRouter()
 
 	port := os.Getenv("PORT")
 	if port == "" {
@@ -24,7 +19,7 @@ func main() {
 	addr := "0.0.0.0:" + port
 	fmt.Println("Server listening on", addr)
 
-	if err := http.ListenAndServe(addr, nil); err != nil {
+	if err := http.ListenAndServe(addr, router); err != nil {
 		fmt.Println("Server error:", err)
 	}
 }
